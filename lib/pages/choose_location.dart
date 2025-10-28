@@ -37,25 +37,21 @@ class ChooseLocation extends StatelessWidget {
           countries.map((element) => Card(
             child: ListTile(
               onTap: () async {
-                print(element.location);
+                print('Tapped: ${element.location}');
                 dynamic result = await Navigator.pushNamed(
                   context,
                   'loading/',
                   arguments: element,
                 );
-                Navigator.pop(context,{
-                    'location': result['location'],
-                    'flag': result['flag'],
-                    'time': result['time'],
-                    'isNightTime' : result['isNightTime'],
-                  });
-                // await element.getTime();
-                // if (!context.mounted) return;
-                // Navigator.pop(context,{
-                //   'location': element.location,
-                //   'flag': element.flag,
-                //   'time': element.time,
-                // });
+
+                print('Result from loading: $result');
+
+                if (result != null) {
+                  print('Popping back to home with result');
+                  Navigator.pop(context, result);
+                } else {
+                  print('Result is null!');
+                }
               },
               title: Padding(
                 padding: EdgeInsets.fromLTRB(12, 8, 0, 8),

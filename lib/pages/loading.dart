@@ -8,24 +8,27 @@ class Loading extends StatefulWidget {
   @override
   State<Loading> createState() => _LoadingState();
 }
-
 class _LoadingState extends State<Loading> {
+  bool _hasNavigated = false;
 
-  void setUpWorldTime(WorldTime instance) async{
+  void setUpWorldTime(WorldTime instance) async {
     await instance.getTime();
-    if(!mounted) return;
+    if (!mounted || _hasNavigated) return;
 
+    _hasNavigated = true;
     Navigator.pop(context, {
       'location': instance.location,
       'flag': instance.flag,
       'time': instance.time,
-      'isNightTime' : instance.isNightTime,
-    });   //get back to choose location
+      'isNightTime': instance.isNightTime,
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_hasNavigated) return; // Prevent multiple calls
+
     WorldTime instance = ModalRoute.of(context)!.settings.arguments as WorldTime;
     setUpWorldTime(instance);
   }
@@ -34,10 +37,10 @@ class _LoadingState extends State<Loading> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child:  SpinKitWaveSpinner(
+        child: SpinKitWaveSpinner(
           color: Colors.blue[200]!,
-          waveColor: Colors.green[200]!,  // Color for the wave/outer ring
-          trackColor: Colors.blue[900]!,  // Color for the inner track/spinner
+          waveColor: Colors.green[200]!,
+          trackColor: Colors.blue[900]!,
           size: 150.0,
         ),
       ),
